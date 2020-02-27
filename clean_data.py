@@ -65,7 +65,7 @@ def clean_data():
     train_df = train_df[~train_df['Gender'].isin(stk_list)]
 
     # Replace missing ages with mean
-    train_df['Age'].fillna(train_df['Age'].median(), inplace = True)
+    train_df['Age'].fillna(train_df['Age'].median(), inplace=True)
 
     # Use median when < 18 or > 120
     s = pd.Series(train_df['Age'])
@@ -76,9 +76,19 @@ def clean_data():
     train_df['Age'] = s
 
     # Age ranges
-    train_df['age_range'] = pd.cut(train_df['Age'], [0,20,30,65,100],
+    train_df['age_range'] = pd.cut(train_df['Age'], [0, 20, 30, 65, 100],
             labels=["0-20", "21-30", "31-65", "66-100"], include_lowest=True)
 
+    # Clean self-employed
+    # Replace NaN with 'No'
+    # print(train_df['self_employed'].unique())
+    train_df['self_employed'] = train_df['self_employed'].replace([default_string], 'No')
+
+    # Clean work interfere
+    # Replace NaN with 'Don't know'
+    # print(train_df['work_interfere'].unique())
+    train_df['work_interfere'] = train_df['work_interfere'].replace([default_string],
+            'Don\'t know')
 
 
 def main():

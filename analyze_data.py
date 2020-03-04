@@ -83,6 +83,10 @@ def clean_data(input_file):
     train_df['age_range'] = pd.cut(train_df['Age'], [0, 20, 30, 65, 100],
             labels=["0-20", "21-30", "31-65", "66-100"], include_lowest=True)
 
+    # Scale age
+    scaler = MinMaxScaler()
+    train_df['Age'] = scaler.fit_transform(train_df[['Age']])
+
     # Clean self-employed
     # Replace NaN with 'No'
     # print(train_df['self_employed'].unique())
@@ -128,7 +132,7 @@ def get_corrmat(train_df):
     # plt.show()
 
     # Top 5 factors that correlate with treatment
-    cols = corrmat.nlargest(5, 'treatment')['treatment'].index
+    cols = corrmat.nlargest(6, 'treatment')['treatment'].index
     coefs = np.corrcoef(train_df[cols].values.T)
     # sns.set(font_scale=1.25)
     sns.heatmap(coefs, cbar=True, annot=True, square=True, fmt='.2f',

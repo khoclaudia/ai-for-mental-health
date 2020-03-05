@@ -140,9 +140,15 @@ def get_corrmat(train_df):
     plt.savefig('figures/treatmat.png')
     # plt.show()
 
+def writeCSV(csvData, newFileName): #creates the CSV
+    with open(newFileName, 'wt') as csvFile:
+        writer = csv.writer(csvFile)
+        writer.writerows(csvData)
+    csvFile.close()
 
 def main():
     train_df = clean_data('input/survey.csv')
+    good_data = (train_df, "cleanData.csv")
     get_corrmat(train_df)
 
 

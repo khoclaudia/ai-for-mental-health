@@ -18,9 +18,11 @@ def write_csv(df, filename):
 def kfold(path):
     parsedData = pd.read_csv(path)
     kfoldData = []
-
+    arr = []
+    for i in range(1,25):
+        arr.append(i)
     X = np.array(parsedData) #parsedData as 2D array
-    y = np.array([1, 2, 3, 4]) #exists for compatibilty purposes
+    y = np.array(arr) #exists for compatibilty purposes
     kf = KFold(n_splits=2) #can alter n_splits
     kf.get_n_splits(X)
 

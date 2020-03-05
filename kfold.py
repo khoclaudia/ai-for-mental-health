@@ -1,43 +1,30 @@
 import numpy as np
-from sklearn.model_selection import KFold
-import xlrd
-import numpy as np
-import pandas as pd
-from xlrd import open_workbook
+import os
 import csv
 
+'''
+Look at the main function for an example on how to use
+'''
 
-def write_csv(df, filename):
-    """
-        Writes a dataframe to a given file
-    """
+def split(path, K):
+    parsedData = np.array(pd.read_csv(path)) # Shape: (1259, 24)
+    splitData = [[] for i in range(K)]
+    
+    # Use k = 10 ==> 9 sets of 126 elements, 1 set of 125 elements
+    for idx in np.random.permutation(parsedData.shape[0]):
+        splitData[idx%K].append(parsedData[idx])
 
-    df.to_csv(filename, index=False)
-
-
-def kfold(path):
-    parsedData = pd.read_csv(path)
-    kfoldData = []
-
-    X = np.array(parsedData) #parsedData as 2D array
-    y = np.array([1, 2, 3, 4]) #exists for compatibilty purposes
-    kf = KFold(n_splits=2) #can alter n_splits
-    kf.get_n_splits(X)
-
-    for train_index, test_index in kf.split(X):
-        print("TRAIN:", train_index, "TEST:", test_index)
-        X_train, X_test = X[train_index], X[test_index]
-        y_train, y_test = y[train_index], y[test_index]
-        kfoldData.append([[X_train, X_test], [y_train, y_test]])
-
-    write_csv(kfoldData, 'kfoldD')
-    return kfoldData
-
+    return [np.array(splitData[i]) for i in range(K)]
 
 def main():
-    # good_data = csvToArrays('input/clean_data.csv', parsedData)
-    kfoldData = kfold('input/clean_data.csv')
-
+    K = 10
+    splitData = split('input/clean_data.csv', K)
+    for iter in range(K):
+        testData = splitData[iter]
+        trainData = np.concatenate(splitData[:iter]+splitData[iter+1:], axis=0)
+        
+        # Use testData and trainData here
+        
 
 if __name__ == "__main__":
     main()

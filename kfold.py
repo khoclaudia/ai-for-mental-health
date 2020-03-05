@@ -1,6 +1,6 @@
 import numpy as np
-import os
 import csv
+import pandas as pd
 
 '''
 Look at the main function for an example on how to use

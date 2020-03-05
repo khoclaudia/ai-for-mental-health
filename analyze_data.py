@@ -84,10 +84,6 @@ def clean_data(input_file):
     train_df['age_range'] = pd.cut(train_df['Age'], [0, 20, 30, 65, 100],
             labels=["0-20", "21-30", "31-65", "66-100"], include_lowest=True)
 
-    # Scale age
-    scaler = MinMaxScaler()
-    train_df['Age'] = scaler.fit_transform(train_df[['Age']])
-
     # Clean self-employed
     # Replace NaN with 'No'
     # print(train_df['self_employed'].unique())
@@ -116,6 +112,10 @@ def clean_data(input_file):
     # Remove country, not needed
     train_df = train_df.drop(['Country'], axis=1)
 
+    # Scale age
+    scaler = MinMaxScaler()
+    train_df['Age'] = scaler.fit_transform(train_df[['Age']])
+
     return train_df
 
 
@@ -141,15 +141,18 @@ def get_corrmat(train_df):
     plt.savefig('figures/treatmat.png')
     # plt.show()
 
-def writeCSV(csvData, newFileName): #creates the CSV
-    with open(newFileName, 'wt') as csvFile:
-        writer = csv.writer(csvFile)
-        writer.writerows(csvData)
-    csvFile.close()
+
+def write_csv(df, filename):
+    """
+        Writes a dataframe to a given file
+    """
+
+    df.to_csv(filename, index=False)
+
 
 def main():
     train_df = clean_data('input/survey.csv')
-    good_data = (train_df, "cleanData.csv")
+    write_csv(train_df, 'input/clean_data.csv')
     get_corrmat(train_df)
 
 

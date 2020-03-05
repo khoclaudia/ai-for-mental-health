@@ -1,21 +1,39 @@
-import analyze_data
-# from sklearn.linear_model import LinearRegression
-# from sklearn.model_selection import train_test_split
-#
-# import numpy as np
-# from sklearn.model_selection import KFold
+import numpy as np
+from sklearn.model_selection import KFold
+from xlrd import open_workbook
+import csv
 
-# from sklearn.datasets import load_boston
-# from sklearn.metrics import mean_absolute_error
-#
-# boston = load_boston()
-#
-# X_train, X_test, Y_train, Y_test = train_test_split(boston.data, boston.target, train_size = 0.7)
-#
-# linreg = LinearRegression()
-#
-# linreg.fit(X_train, Y_train)
-#
-# y_pred = linreg.predict(X_test)
-#
-# mean_absolute_error(Y_test, y_pred)
+parsedData = []
+def csvToArrays(path, parseData): #need to replace path w/ cleanedCSV
+    #reads the xls or xlsx file, not csv
+    book = xlrd.open_workbook(path)
+    first_sheet = book.sheet_by_index(0) #reads the 1st sheet
+
+    for i in range(1, first_sheet.nrows):
+        for i in range(len(i)):
+            cell = first_sheet.cell(i,j)
+            parsedData.append(cell.value)
+    return parsedData
+
+def kfold(parsedData):
+    kfoldData = []
+    X = np.array(parsedData) #parsedData as 2D array
+    y = np.array([1, 2, 3, 4]) #exists for compatibilty purposes
+    kf = KFold(n_splits=2) #can alter n_splits
+    kf.get_n_splits(X)
+
+    for train_index, test_index in kf.split(X):
+        print("TRAIN:", train_index, "TEST:", test_index)
+        kfoldData.append([[X_train, X_test], [y_train, y_test]])
+        X_train, X_test = X[train_index], X[test_index]
+        y_train, y_test = y[train_index], y[test_index]
+    return kfoldData
+
+def main():
+    # import 'CLEANED CSV NAME'
+    # good_data = csvToArrays('CLEANED CSV NAME', parsedData)
+    # kfoldData = kfold(good_data)
+
+
+# if __name__ == "__main__":
+#     main()
